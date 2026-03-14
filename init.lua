@@ -9,6 +9,9 @@ hs.hotkey.bind({ "cmd", "alt", "ctrl" }, "W", function()
 	-- hs.notify.new({ title = "Hammerspoon", informativeText = "Hello World" }):send()
 end)
 
+-- Alt 2 = Browser
+-- Raycast cant launch Zen Browser properly if its not launched yet
+-- Raycast also cant cycle thru windows thru spaces
 hs.hotkey.bind({ "alt" }, "2", function()
 	local appName = "Zen"
 
