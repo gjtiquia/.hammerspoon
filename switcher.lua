@@ -221,24 +221,36 @@ function obj:previousWindow(onlyCurrentApp)
 end
 
 -- select any other window
-hs.hotkey.bind({ "alt" }, "b", function()
+function selectAnyOtherWindow()
 	obj:selectWindow(false)
-end)
+end
 
 -- select any window for the same application
-hs.hotkey.bind({ "alt", "shift" }, "b", function()
+function selectAnyWindowOfCurrentApp()
 	obj:selectWindow(true)
-end)
+end
 
 -- cycles through all widows of the frontmost app.
-function switcherfunc()
+function switchWindowOfCurrentApp()
 	return obj:switchWindow(true)
 end
 
+--  function to either launch apps or switch through them using switcher
+function openswitch(name)
+	return function()
+		if hs.application.frontmostApplication():name() == name then
+			-- cycles through all windows of the frontmost app
+			switchWindowOfCurrentApp()
+		else
+			hs.application.launchOrFocus(name)
+		end
+	end
+end
+
 -- Alt-tab replacement to go to last window
-hs.hotkey.bind({ "ctrl", "alt", "cmd" }, "tab", function()
-	obj:previousWindow(false)
-end)
+-- hs.hotkey.bind({ "ctrl", "alt", "cmd" }, "tab", function()
+-- 	obj:previousWindow(false)
+-- end)
 
 return obj
 
