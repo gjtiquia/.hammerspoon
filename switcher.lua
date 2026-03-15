@@ -1,4 +1,6 @@
---- Copied from https://github.com/Porco-Rosso/PorcoSpoon
+-- Custom Window Switcher
+-- from https://www.reddit.com/r/hammerspoon/comments/rj92su/help_switch_focus_to_next_app_window_across_spaces/
+-- from https://github.com/Porco-Rosso/PorcoSpoon
 
 ---
 --- Modified version of dmg hammerspoon
