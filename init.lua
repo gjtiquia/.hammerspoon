@@ -15,13 +15,30 @@ hs.hotkey.bind({ "cmd", "alt", "ctrl" }, "W", function()
 	-- hs.notify.new({ title = "Hammerspoon", informativeText = "Hello World" }):send()
 end)
 
--- Alt 2 = Browser
--- Raycast cant launch Zen Browser properly if its not launched yet
--- Raycast also cant cycle thru windows thru spaces
--- TODO : not working well tho, deleted all and left to barebones, should try Spoon plugins
-hs.hotkey.bind({ "alt" }, "2", function()
-	hs.application.launchOrFocus("Zen")
-end)
+-- Custom Window Switcher
+-- from https://www.reddit.com/r/hammerspoon/comments/rj92su/help_switch_focus_to_next_app_window_across_spaces/
+-- from https://github.com/Porco-Rosso/PorcoSpoon
+
+-- Alt-B is bound to the switcher dialog for all apps.
+-- Alt-shift-B is bound to the switcher dialog for the current app.
+-- Ctrl-alt-cmd + tab cycles to the previously focused app.
+local switcher = require("switcher")
+
+-- keybinds below launches/switches to the window of the app or cycles through its open windows if already focused
+-- switcherfunc() cycles through all widows of the frontmost app.
+
+--  function to either open apps or switch through them using switcher
+function openswitch(name)
+	return function()
+		if hs.application.frontmostApplication():name() == name then
+			switcherfunc()
+		else
+			hs.application.launchOrFocus(name)
+		end
+	end
+end
+
+hs.hotkey.bind("alt", "2", openswitch("Zen"))
 
 -- note:
 -- oddly, even for this "native" solution, only 1 zen window is available on load
@@ -36,9 +53,4 @@ end)
 
 hs.hotkey.bind("alt-shift", "tab", "Prev window", function()
 	switcher:previous()
-end)
-
-switcher_zen = hs.window.switcher.new({ "Zen" })
-hs.hotkey.bind({ "ctrl", "alt" }, "tab", "Next window", function()
-	switcher_zen:next()
 end)
