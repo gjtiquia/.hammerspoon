@@ -1,7 +1,7 @@
 -- logging setup
 -- view logs with console (open with menu bar)
 -- https://www.hammerspoon.org/docs/hs.logger.html
-local log = hs.logger.new('debug','debug')
+local log = hs.logger.new("debug", "debug")
 log.d("initializing...")
 
 -- Hammerspoon Hello World
@@ -21,4 +21,24 @@ end)
 -- TODO : not working well tho, deleted all and left to barebones, should try Spoon plugins
 hs.hotkey.bind({ "alt" }, "2", function()
 	hs.application.launchOrFocus("Zen")
+end)
+
+-- note:
+-- oddly, even for this "native" solution, only 1 zen window is available on load
+-- only when i hv focused on the other zen window at least once, only then will it appear on the list
+-- similar behavior with hs.window.filter
+
+-- https://www.hammerspoon.org/docs/hs.window.switcher.html
+switcher = hs.window.switcher.new() -- default windowfilter: only visible windows, all Spaces
+hs.hotkey.bind("alt", "tab", "Next window", function()
+	switcher:next()
+end)
+
+hs.hotkey.bind("alt-shift", "tab", "Prev window", function()
+	switcher:previous()
+end)
+
+switcher_zen = hs.window.switcher.new({ "Zen" })
+hs.hotkey.bind({ "ctrl", "alt" }, "tab", "Next window", function()
+	switcher_zen:next()
 end)
