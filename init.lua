@@ -1,3 +1,9 @@
+-- logging setup
+-- view logs with console (open with menu bar)
+-- https://www.hammerspoon.org/docs/hs.logger.html
+local log = hs.logger.new('debug','debug')
+log.d("initializing...")
+
 -- Hammerspoon Hello World
 -- https://www.hammerspoon.org/go/
 hs.hotkey.bind({ "cmd", "alt", "ctrl" }, "W", function()
