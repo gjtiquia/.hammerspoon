@@ -237,15 +237,65 @@ end
 
 --  function to either launch apps or switch through them using switcher
 function openswitch(name)
-	return function()
-		if hs.application.frontmostApplication():name() == name then
-			-- cycles through all windows of the frontmost app
-			switchWindowOfCurrentApp()
-		else
-			hs.application.launchOrFocus(name)
-		end
+	if hs.application.frontmostApplication():name() == name then
+		-- cycles through all windows of the frontmost app
+		switchWindowOfCurrentApp()
+	else
+		hs.application.launchOrFocus(name)
 	end
 end
+
+function listWindowsWithAppName(targetAppName)
+	local windowChoices = {}
+	for i, w in ipairs(obj.currentWindows) do
+		local app = w:application()
+		local appImage = nil
+		local appName = "(none)"
+
+		if app then
+			appName = app:name()
+			appImage = hs.image.imageFromAppBundle(w:application():bundleID())
+		end
+
+		if appName ~= targetAppName then
+			goto continue
+		end
+
+		-- print(w:title())
+		-- print(appName)
+		-- print(i)
+		-- print(appImage)
+		-- print("-------------------------")
+
+		table.insert(windowChoices, {
+			text = w:title() .. "--" .. appName,
+			subText = appName,
+			uuid = i,
+			image = appImage,
+			win = w,
+		})
+
+		::continue::
+	end
+
+	return windowChoices
+end
+
+function switchWithOpenFallback(switchAppName, openFallbackAppName)
+	local windows = listWindowsWithAppName(switchAppName)
+	-- print(#windows)
+
+	if #windows == 0 then
+		hs.application.launchOrFocus(openFallbackAppName)
+	end
+
+	local choiceIndex = #windows -- use the last index as the choice index
+	local window = windows[choiceIndex]["win"]
+	if window then
+		window:focus()
+	end
+end
+
 
 return obj
 
