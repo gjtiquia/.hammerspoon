@@ -1,16 +1,46 @@
 -- custom switcher
 require("switcher")
 
-hs.hotkey.bind("alt", "b", selectAnyOtherWindow)
-hs.hotkey.bind({ "alt", "shift" }, "b", selectAnyWindowOfCurrentApp)
+hs.hotkey.bind("alt", "1", function()
+	hs.application.launchOrFocus("Ghostty")
+end)
 
 hs.hotkey.bind("alt", "2", function()
+	-- launch/focus or switch between open windows
 	openswitch("Zen")
 end)
 
-hs.hotkey.bind("alt", "9", function()
-	switchWithOpenFallback("Unity", "UnityHub")
+hs.hotkey.bind("alt", "3", function()
+	hs.application.launchOrFocus("Obsidian")
 end)
+
+hs.hotkey.bind("alt", "4", function()
+	hs.application.launchOrFocus("WhatsApp")
+end)
+
+hs.hotkey.bind("alt", "5", function()
+	hs.application.launchOrFocus("Signal")
+end)
+
+hs.hotkey.bind("alt", "6", function()
+	hs.application.launchOrFocus("Fork")
+end)
+
+hs.hotkey.bind("alt", "7", function()
+	-- launch/focus or switch between open windows
+	openswitch("Google Chrome")
+end)
+
+hs.hotkey.bind("alt", "8", function()
+	hs.application.launchOrFocus("Unity Hub")
+end)
+
+hs.hotkey.bind("alt", "9", function()
+	switchWithOpenFallback("Unity", "Unity Hub")
+end)
+
+hs.hotkey.bind("alt", "b", selectAnyOtherWindow)
+hs.hotkey.bind({ "alt", "shift" }, "b", selectAnyWindowOfCurrentApp)
 
 -- note:
 -- oddly, even for this "native" solution, only 1 zen window is available on load

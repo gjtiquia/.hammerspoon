@@ -296,7 +296,6 @@ function switchWithOpenFallback(switchAppName, openFallbackAppName)
 	end
 end
 
-
 return obj
 
 -----------------------------------------------------------
