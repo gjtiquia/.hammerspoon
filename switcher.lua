@@ -247,11 +247,6 @@ function openswitch(name)
 	end
 end
 
--- Alt-tab replacement to go to last window
--- hs.hotkey.bind({ "ctrl", "alt", "cmd" }, "tab", function()
--- 	obj:previousWindow(false)
--- end)
-
 return obj
 
 -----------------------------------------------------------
