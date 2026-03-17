@@ -42,6 +42,17 @@ end)
 hs.hotkey.bind("alt", "b", selectAnyOtherWindow)
 hs.hotkey.bind({ "alt", "shift" }, "b", selectAnyWindowOfCurrentApp)
 
+hs.hotkey.bind({ "alt", "shift" }, "s", function()
+	hs.application.launchOrFocus("Screenshot")
+end)
+
+hs.hotkey.bind("alt", "up", function()
+	local win = hs.window.focusedWindow()
+	if win then
+		win:toggleFullScreen()
+	end
+end)
+
 -- note:
 -- oddly, even for this "native" solution, only 1 zen window is available on load
 -- only when i hv focused on the other zen window at least once, only then will it appear on the list
