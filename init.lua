@@ -69,4 +69,6 @@ end)
 -- similar behavior with hs.window.filter and the custom switcher alt+b (custom switcher did mention the hammerspoon window tracking is broken)
 -- https://www.hammerspoon.org/docs/hs.window.switcher.html
 local nextWindow = hs.window.switcher.nextWindow
+local prevWindow = hs.window.switcher.previousWindow
 hs.hotkey.bind("alt", "tab", nextWindow, nil, nextWindow)
+hs.hotkey.bind({ "alt", "shift" }, "tab", prevWindow, nil, prevWindow)
