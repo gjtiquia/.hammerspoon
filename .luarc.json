@@ -1,5 +1,5 @@
 {
-    "diagnostics.globals": [
-        "hs"
+    "Lua.workspace.library": [
+        "./Spoons/EmmyLua.spoon/annotations"
     ]
 }

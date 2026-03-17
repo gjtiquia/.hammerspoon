@@ -1,3 +1,8 @@
+-- LSP config (and .luarc.json)
+-- troubleshooting: try reloading config
+-- https://www.hammerspoon.org/Spoons/EmmyLua.html
+hs.loadSpoon("EmmyLua")
+
 -- custom switcher
 require("switcher")
 
