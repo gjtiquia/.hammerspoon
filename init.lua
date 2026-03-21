@@ -68,12 +68,17 @@ hs.hotkey.bind("alt", "up", function()
 	end
 end)
 
--- note:
--- oddly, even for this "native" solution, only 1 zen window is available on load
--- only when i hv focused on the other zen window at least once, only then will it appear on the list
--- similar behavior with hs.window.filter and the custom switcher alt+b (custom switcher did mention the hammerspoon window tracking is broken)
--- https://www.hammerspoon.org/docs/hs.window.switcher.html
-local nextWindow = hs.window.switcher.nextWindow
-local prevWindow = hs.window.switcher.previousWindow
-hs.hotkey.bind("alt", "tab", nextWindow, nil, nextWindow)
-hs.hotkey.bind({ "alt", "shift" }, "tab", prevWindow, nil, prevWindow)
+-- TODO : alt left/right split window
+
+-- alt+tab to switch to the last focused app (like cmd+tab)
+-- getWindows() returns windows sorted by most-recently-focused by default
+hs.hotkey.bind("alt", "tab", function()
+	local currentApp = hs.application.frontmostApplication():name()
+	local windows = hs.window.filter.default:getWindows()
+	for _, win in ipairs(windows) do
+		if win:application():name() ~= currentApp then
+			win:focus()
+			return
+		end
+	end
+end)
