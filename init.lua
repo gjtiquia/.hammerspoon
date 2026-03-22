@@ -68,7 +68,36 @@ hs.hotkey.bind("alt", "up", function()
 	end
 end)
 
--- TODO : alt left/right split window
+-- alt left/right split window (derived from Windows / Linux as well)
+hs.hotkey.bind("alt", "left", function()
+	local win = hs.window.focusedWindow()
+	if win then
+		local f = win:frame()
+		local screen = win:screen()
+		local max = screen:frame()
+
+		f.x = max.x
+		f.y = max.y
+		f.w = max.w / 2
+		f.h = max.h
+		win:setFrame(f)
+	end
+end)
+
+hs.hotkey.bind("alt", "right", function()
+	local win = hs.window.focusedWindow()
+	if win then
+		local f = win:frame()
+		local screen = win:screen()
+		local max = screen:frame()
+
+		f.x = max.x + (max.w / 2)
+		f.y = max.y
+		f.w = max.w / 2
+		f.h = max.h
+		win:setFrame(f)
+	end
+end)
 
 -- show current date and time
 hs.hotkey.bind("alt", "t", function()
