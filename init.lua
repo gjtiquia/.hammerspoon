@@ -85,34 +85,49 @@ hs.hotkey.bind("alt", "left", function()
 end)
 
 hs.hotkey.bind("alt", "right", function()
-  local win = hs.window.focusedWindow()
-  if win then
-    local f = win:frame()
-    local screen = win:screen()
-    local max = screen:frame()
-    
-    f.x = max.x + (max.w / 2)
-    f.y = max.y
-    f.w = max.w / 2
-    f.h = max.h
-    win:setFrame(f)
-  end
+	local win = hs.window.focusedWindow()
+	if win then
+		local f = win:frame()
+		local screen = win:screen()
+		local max = screen:frame()
+
+		f.x = max.x + (max.w / 2)
+		f.y = max.y
+		f.w = max.w / 2
+		f.h = max.h
+		win:setFrame(f)
+	end
 end)
 
--- alt+down to center window with half size
+-- alt+down toggle between centered half-size and full screen
 hs.hotkey.bind("alt", "down", function()
-  local win = hs.window.focusedWindow()
-  if win then
-    local f = win:frame()
-    local screen = win:screen()
-    local max = screen:frame()
-    
-    f.x = max.x + (max.w / 4)  -- Center horizontally
-    f.y = max.y + (max.h / 4)  -- Center vertically
-    f.w = max.w / 2            -- Half width
-    f.h = max.h / 2            -- Half height
-    win:setFrame(f)
-  end
+	local win = hs.window.focusedWindow()
+	if win then
+		local screen = win:screen()
+		local max = screen:frame()
+		-- half-size centered frame
+		local half = {
+			x = max.x + (max.w / 4),
+			y = max.y + (max.h / 4),
+			w = max.w / 2,
+			h = max.h / 2,
+		}
+		local f = win:frame()
+		-- check if current frame matches half-size (allow small difference)
+        local diff = 4 -- 1 works but i want more allowance
+		if
+			math.abs(f.x - half.x) < diff
+			and math.abs(f.y - half.y) < diff
+			and math.abs(f.w - half.w) < diff
+			and math.abs(f.h - half.h) < diff
+		then
+			-- currently half-size, go full screen
+			win:setFrame(max)
+		else
+			-- otherwise set to half-size centered
+			win:setFrame(half)
+		end
+	end
 end)
 
 -- show current date and time
