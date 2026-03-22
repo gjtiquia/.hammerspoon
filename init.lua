@@ -72,9 +72,7 @@ end)
 
 -- show current date and time
 hs.hotkey.bind("alt", "t", function()
-	-- hs.alert.show(os.date("%Y-%m-%d %H:%M:%S %A"))
-	hs.alert.show(os.date("[ %Y-%m-%d | %H:%M:%S | %A ]"))
-	-- hs.alert.show(os.date("%Y-%m-%d") .. "  |  " ..os.date("%H:%M:%S") .. os.date("%A"))
+	hs.alert.show(os.date("[    %Y-%m-%d    |    %H:%M:%S    |    %A    ]"), { padding = 40 })
 end)
 
 -- alt+tab to switch to the last focused app (like cmd+tab)
