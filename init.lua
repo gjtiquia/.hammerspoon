@@ -85,18 +85,34 @@ hs.hotkey.bind("alt", "left", function()
 end)
 
 hs.hotkey.bind("alt", "right", function()
-	local win = hs.window.focusedWindow()
-	if win then
-		local f = win:frame()
-		local screen = win:screen()
-		local max = screen:frame()
+  local win = hs.window.focusedWindow()
+  if win then
+    local f = win:frame()
+    local screen = win:screen()
+    local max = screen:frame()
+    
+    f.x = max.x + (max.w / 2)
+    f.y = max.y
+    f.w = max.w / 2
+    f.h = max.h
+    win:setFrame(f)
+  end
+end)
 
-		f.x = max.x + (max.w / 2)
-		f.y = max.y
-		f.w = max.w / 2
-		f.h = max.h
-		win:setFrame(f)
-	end
+-- alt+down to center window with half size
+hs.hotkey.bind("alt", "down", function()
+  local win = hs.window.focusedWindow()
+  if win then
+    local f = win:frame()
+    local screen = win:screen()
+    local max = screen:frame()
+    
+    f.x = max.x + (max.w / 4)  -- Center horizontally
+    f.y = max.y + (max.h / 4)  -- Center vertically
+    f.w = max.w / 2            -- Half width
+    f.h = max.h / 2            -- Half height
+    win:setFrame(f)
+  end
 end)
 
 -- show current date and time
