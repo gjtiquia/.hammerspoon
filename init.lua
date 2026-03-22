@@ -70,6 +70,13 @@ end)
 
 -- TODO : alt left/right split window
 
+-- show current date and time
+hs.hotkey.bind("alt", "t", function()
+	-- hs.alert.show(os.date("%Y-%m-%d %H:%M:%S %A"))
+	hs.alert.show(os.date("[ %Y-%m-%d | %H:%M:%S | %A ]"))
+	-- hs.alert.show(os.date("%Y-%m-%d") .. "  |  " ..os.date("%H:%M:%S") .. os.date("%A"))
+end)
+
 -- alt+tab to switch to the last focused app (like cmd+tab)
 -- getWindows() returns windows sorted by most-recently-focused by default
 hs.hotkey.bind("alt", "tab", function()
