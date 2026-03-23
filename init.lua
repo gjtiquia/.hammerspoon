@@ -55,6 +55,24 @@ end)
 hs.hotkey.bind("alt", "b", selectAnyOtherWindow)
 hs.hotkey.bind({ "alt", "shift" }, "b", selectAnyWindowOfCurrentApp)
 
+-- map Alt+C / Alt+V to Cmd+C / Cmd+V (make Alt act like Command for copy/paste)
+hs.hotkey.bind("alt", "c", function()
+    hs.eventtap.keyStroke({ "cmd" }, "c")
+end)
+
+hs.hotkey.bind("alt", "v", function()
+    hs.eventtap.keyStroke({ "cmd" }, "v")
+end)
+
+-- add Alt+X (cut) and Alt+A (select all)
+hs.hotkey.bind("alt", "x", function()
+    hs.eventtap.keyStroke({ "cmd" }, "x")
+end)
+
+hs.hotkey.bind("alt", "a", function()
+    hs.eventtap.keyStroke({ "cmd" }, "a")
+end)
+
 -- derived from Windows screencapture shortcut
 hs.hotkey.bind({ "alt", "shift" }, "s", function()
 	hs.application.launchOrFocus("Screenshot")
