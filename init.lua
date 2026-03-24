@@ -86,33 +86,30 @@ hs.hotkey.bind("alt", "up", function()
 	end
 end)
 
--- alt left/right split window (derived from Windows / Linux as well)
--- Cycle window widths (global, no persistence).
--- alt+right: next width from set, right-aligned. alt+left: previous, left-aligned.
-local window_cycle_seq = { 1/2, 1/3, 1/5, 2/3, 4/5 }
--- Fractional tolerance used when matching current window width to a candidate fraction.
--- Example: 0.06 means ±6% of the screen width.
-local width_fraction_tolerance = 0.10
+-- Window cycle (simplified): two sequences per side, no app min-width checks.
+-- Small sequence: 1/2 -> 1/3 -> 1/5
+-- Large sequence: 1/2 -> 2/3 -> 4/5
+local small_seq = { 1/2, 1/3, 1/5 }
+local large_seq = { 1/2, 2/3, 4/5 }
+local width_fraction_tolerance = 0.06 -- ±6% of screen width for matching
+
+local function pixelTolForScreen(sf)
+    return math.floor(width_fraction_tolerance * sf.w + 0.5)
+end
 
 local function getAlignment(win, sf)
-    -- return "left", "right", or "other" based on window x position
     local wf = win:frame()
-    local pixel_tolerance = math.floor(width_fraction_tolerance * sf.w + 0.5)
-    if math.abs(wf.x - sf.x) <= pixel_tolerance then
-        return "left"
-    end
-    if math.abs((wf.x + wf.w) - (sf.x + sf.w)) <= pixel_tolerance then
-        return "right"
-    end
+    local tol = pixelTolForScreen(sf)
+    if math.abs(wf.x - sf.x) <= tol then return "left" end
+    if math.abs((wf.x + wf.w) - (sf.x + sf.w)) <= tol then return "right" end
     return "other"
 end
 
-local function nearestIndex(curr, side, win, sf)
-    -- Match both fraction (within tolerance) and alignment (left/right) matching requested side.
-    for i, v in ipairs(window_cycle_seq) do
-        if math.abs(curr - v) <= width_fraction_tolerance then
-            local align = getAlignment(win, sf)
-            if align == side then
+local function nearestIndexForSeq(curr_frac, seq, side, win, sf)
+    -- match fraction within tolerance and alignment
+    for i, v in ipairs(seq) do
+        if math.abs(curr_frac - v) <= width_fraction_tolerance then
+            if getAlignment(win, sf) == side then
                 return i
             end
         end
@@ -120,39 +117,53 @@ local function nearestIndex(curr, side, win, sf)
     return nil
 end
 
-local function applyFractionToSide(win, fraction, side)
+local function applyFractionSimple(win, fraction, side)
     if not win then return end
     local screen = win:screen()
     if not screen then return end
     local sf = screen:frame()
     local newW = math.floor(sf.w * fraction + 0.5)
-    local newH = sf.h
-    local newY = sf.y
     local newX = (side == "right") and (sf.x + sf.w - newW) or sf.x
-    win:setFrame({ x = newX, y = newY, w = newW, h = newH }, 0)
+    local newFrame = { x = newX, y = sf.y, w = newW, h = sf.h }
+    win:setFrame(newFrame, 0)
 end
 
-local function cycleWindow(win, side)
-    -- Advance to the next fraction in window_cycle_seq regardless of which key was pressed.
+local function cycleWithSeq(win, seq, side)
     if not win then return end
-    local sf = win:screen():frame()
+    local screen = win:screen()
+    if not screen then return end
+    local sf = screen:frame()
     local wf = win:frame()
     local curr_frac = wf.w / sf.w
-    local idx = nearestIndex(curr_frac, side, win, sf)
-    if not idx then
-        idx = 1 -- start at 1/2 if no match
-    else
-        idx = (idx % #window_cycle_seq) + 1
-    end
-    applyFractionToSide(win, window_cycle_seq[idx], side)
+    local n = #seq
+
+    local idx = nearestIndexForSeq(curr_frac, seq, side, win, sf)
+    if not idx then idx = 1 end
+    local next_idx = (idx % n) + 1
+
+    applyFractionSimple(win, seq[next_idx], side)
 end
 
-hs.hotkey.bind("alt", "left", function()
-    cycleWindow(hs.window.focusedWindow(), "left")
+-- Hotkeys mapping:
+-- alt+right -> right-aligned, small_seq
+-- alt+shift+left -> right-aligned, large_seq
+-- alt+left -> left-aligned, small_seq
+-- alt+shift+right -> left-aligned, large_seq
+
+hs.hotkey.bind({"alt"}, "right", function()
+    cycleWithSeq(hs.window.focusedWindow(), small_seq, "right")
 end)
 
-hs.hotkey.bind("alt", "right", function()
-    cycleWindow(hs.window.focusedWindow(), "right")
+hs.hotkey.bind({"alt", "shift"}, "left", function()
+    cycleWithSeq(hs.window.focusedWindow(), large_seq, "right")
+end)
+
+hs.hotkey.bind({"alt"}, "left", function()
+    cycleWithSeq(hs.window.focusedWindow(), small_seq, "left")
+end)
+
+hs.hotkey.bind({"alt", "shift"}, "right", function()
+    cycleWithSeq(hs.window.focusedWindow(), large_seq, "left")
 end)
 
 -- alt+down toggle between centered half-size and full screen
