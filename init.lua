@@ -159,6 +159,75 @@ local function cycleWithSeq(win, seq, side)
     applyFractionSimple(win, seq[next_idx], side)
 end
 
+-- Vertical cycling: preserve window width/x, adjust height and y only
+local vert_seq = { 1, 2 / 3, 1 / 2, 1 / 3 }
+
+local function getVAlignment(win, sf)
+    -- returns "top", "bottom", or "other" based on proximity to screen edges
+    local wf = win:frame()
+    local tol = pixelTolForScreen(sf)
+    if math.abs(wf.y - sf.y) <= tol then
+        return "top"
+    end
+    if math.abs((wf.y + wf.h) - (sf.y + sf.h)) <= tol then
+        return "bottom"
+    end
+    return "other"
+end
+
+local function nearestIndexForSeqVertical(curr_frac, seq, side, win, sf)
+    -- match fraction within tolerance and vertical alignment
+    for i, v in ipairs(seq) do
+        if math.abs(curr_frac - v) <= width_fraction_tolerance then
+            if getVAlignment(win, sf) == side then
+                return i
+            end
+        end
+    end
+    return nil
+end
+
+local function applyVerticalFraction(win, fraction, side)
+    if not win then
+        return
+    end
+    local screen = win:screen()
+    if not screen then
+        return
+    end
+    local sf = screen:frame()
+    local wf = win:frame()
+
+    local newH = math.floor(sf.h * fraction + 0.5)
+    local newY = (side == "bottom") and (sf.y + sf.h - newH) or sf.y
+
+    -- preserve current horizontal position/size
+    local newFrame = { x = wf.x, y = newY, w = wf.w, h = newH }
+    win:setFrame(newFrame, 0)
+end
+
+local function cycleWithSeqVertical(win, seq, side)
+    if not win then
+        return
+    end
+    local screen = win:screen()
+    if not screen then
+        return
+    end
+    local sf = screen:frame()
+    local wf = win:frame()
+    local curr_frac = wf.h / sf.h
+    local n = #seq
+
+    local idx = nearestIndexForSeqVertical(curr_frac, seq, side, win, sf)
+    if not idx then
+        idx = 1
+    end
+    local next_idx = (idx % n) + 1
+
+    applyVerticalFraction(win, seq[next_idx], side)
+end
+
 -- Hotkeys mapping:
 -- ctrl+alt+right -> right-aligned, small_seq
 -- ctrl+alt+shift+left -> right-aligned, large_seq
@@ -171,16 +240,24 @@ hs.hotkey.bind({ "ctrl", "alt" }, "right", function()
     cycleWithSeq(hs.window.focusedWindow(), small_seq, "right")
 end)
 
-hs.hotkey.bind({ "ctrl", "alt", "shift" }, "left", function()
-    cycleWithSeq(hs.window.focusedWindow(), large_seq, "right")
-end)
-
 hs.hotkey.bind({ "ctrl", "alt" }, "left", function()
     cycleWithSeq(hs.window.focusedWindow(), small_seq, "left")
 end)
 
+hs.hotkey.bind({ "ctrl", "alt", "shift" }, "left", function()
+    cycleWithSeq(hs.window.focusedWindow(), large_seq, "right")
+end)
+
 hs.hotkey.bind({ "ctrl", "alt", "shift" }, "right", function()
     cycleWithSeq(hs.window.focusedWindow(), large_seq, "left")
+end)
+
+hs.hotkey.bind({ "ctrl", "alt", "shift" }, "up", function()
+    cycleWithSeqVertical(hs.window.focusedWindow(), vert_seq, "top")
+end)
+
+hs.hotkey.bind({ "ctrl", "alt", "shift" }, "down", function()
+    cycleWithSeqVertical(hs.window.focusedWindow(), vert_seq, "bottom")
 end)
 
 -- alt+down toggle between centered half-size and full screen
