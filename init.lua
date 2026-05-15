@@ -35,7 +35,7 @@ end)
 
 hs.hotkey.bind("alt", "7", function()
     -- launch/focus or switch between open windows
-    openswitch("Google Chrome")
+    openswitch("Rider")
 end)
 
 hs.hotkey.bind("alt", "8", function()
