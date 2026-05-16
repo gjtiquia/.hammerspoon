@@ -39,8 +39,12 @@ hs.hotkey.bind("alt", "7", function()
 end)
 
 hs.hotkey.bind("alt", "8", function()
-    -- launch/focus or switch between open windows
-    openswitch("Cursor")
+    -- Prefer Codex when it is already running; otherwise default to Cursor.
+    if hs.application.get("Codex") then
+        openswitch("Codex")
+    else
+        openswitch("Cursor")
+    end
 end)
 
 hs.hotkey.bind("alt", "9", function()
